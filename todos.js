@@ -8,7 +8,7 @@ if(Meteor.isClient){
 	});
 
 	Template.todos.events({
-		'submit form': function(){
+		'submit form': function(event){
 			event.preventDefault();
 			var todoName = $('[name="todoName"]').val();
 			Todos.insert({
@@ -17,6 +17,18 @@ if(Meteor.isClient){
 				createdAt: new Date()
 			});
 			$('[name="todoName"]').val('');
+		}
+	});
+
+	Template.todoItem.events({
+		'click .delete-todo': function(event){
+			event.preventDefault();
+			var documentId = this._id;
+			var confirm = window.confirm("Delete this task?");
+			if(confirm){
+				Todos.remove({_id: documentId});
+				// Todos.remove(documentId);
+			}
 		}
 	});
 }
