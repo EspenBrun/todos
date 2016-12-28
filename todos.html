@@ -14,12 +14,14 @@
 		{{> todoItem}}
 	{{/each}}	
 	</ul>
+{{> todosCount}}
 </template>
 
 <template name="todoItem">
-	<li>
-		{{name}}
-		[<a href="#" class="delete-todo">Delete</a>]
+	<li class={{checked}}>
+		<input type="checkbox" {{checked}}>
+		<input type="text" value="{{name}}" name="todoItem">
+		<button class="delete-todo">&times;</button>
 	</li>
 </template>
 
@@ -28,4 +30,12 @@
 		Create a task:
 		<input type="text" name="todoName" placeholder="Insert task">
 	</form>
+</template>
+
+<template name="todosCount">
+{{#if todosCount}}
+	<p>Total: {{todosCount}}</p>
+	<p>Active: {{activeCount}}</p>
+	<p>Completed: {{completedCount}} </p>
+{{/if}}
 </template>
