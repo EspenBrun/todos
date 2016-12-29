@@ -1,5 +1,15 @@
 Todos = new Mongo.Collection('todos');
 
+Router.route('/', {
+	name: 'home',
+	template: 'home'
+});
+Router.configure({
+	layoutTemplate: 'main'
+});
+Router.route('/register');
+Router.route('/login');
+
 if(Meteor.isClient){
 	Template.todos.helpers({
 		'todo': function(){
