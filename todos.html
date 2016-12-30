@@ -5,6 +5,7 @@
 <template name="main">
 	<h1>Todos</h1>
 	{{> navigation}}
+	{{> lists}}
 	{{> yield}}
 	<hr />
 	<p>Copyright &copy; Todos, 2014-2015.</p>
@@ -25,13 +26,13 @@
 </template>
 
 <template name="todos">
-{{> addTodo}}
-	<ul>
-	{{#each todo}}
-		{{> todoItem}}
-	{{/each}}	
-	</ul>
-{{> todosCount}}
+	{{> addTodo}}
+		<ul>
+		{{#each todo}}
+			{{> todoItem}}
+		{{/each}}	
+		</ul>
+	{{> todosCount}}
 </template>
 
 <template name="todoItem">
@@ -65,3 +66,23 @@
 	<h2>Login</h2>
 </template>
 
+<template name="lists">
+	<h2>Lists</h2>
+	{{> addList}}
+	<ul>
+		{{#each list}}
+			<li><a href="{{pathFor route='listPage'}}">{{name}}</a></li>
+		{{/each}}
+	</ul>
+</template>
+
+<template name="addList">
+	<form>Create a list:
+		<input type="text" placeholder="List name" name="listName">
+	</form>
+</template>
+
+<template name="listPage">
+	<h2>List: {{name}}</h2>
+	{{> todos}}
+</template>

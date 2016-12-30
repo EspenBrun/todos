@@ -1,4 +1,5 @@
 Todos = new Mongo.Collection('todos');
+Lists = new Mongo.Collection('lists');
 
 Router.route('/', {
 	name: 'home',
@@ -9,22 +10,33 @@ Router.configure({
 });
 Router.route('/register');
 Router.route('/login');
+Router.route('/list/:_id', {
+	name: 'listPage',
+	template: 'listPage',
+	data: function(){
+		var currentList = this.params._id;
+		return Lists.findOne({_id: currentList});
+	}
+});
 
 if(Meteor.isClient){
 	Template.todos.helpers({
 		'todo': function(){
-			return Todos.find({}, {sort: {createdAt: -1}});
+			var currentList = this._id;
+			return Todos.find({listId: currentList}, {sort: {createdAt: -1}});
 		},
-	});
+	});	
 
 	Template.todos.events({
 		'submit form': function(event){
 			event.preventDefault();
 			var todoName = $('[name="todoName"]').val();
+			var currentList = this._id;
 			Todos.insert({
 				name: todoName,
 				completed: false,
-				createdAt: new Date()
+				createdAt: new Date(),
+				listId: currentList
 			});
 			$('[name="todoName"]').val('');
 		}
@@ -68,13 +80,35 @@ if(Meteor.isClient){
 
 	Template.todosCount.helpers({
 		'todosCount': function(){
-			return Todos.find().count();
+			var currentList = this._id;
+			return Todos.find({listId: currentList}).count();
 		},
 		'completedCount': function(){
-			return Todos.find({completed: true}).count();
+			var currentList = this._id;
+			return Todos.find({completed: true, listId: currentList}).count();
 		},
 		'activeCount': function(){
-			return Todos.find({completed: false}).count();
+			var currentList = this._id;
+			return Todos.find({completed: false, listId: currentList}).count();
+		}
+	});
+
+	Template.lists.helpers({
+		'list': function(){
+			return Lists.find({}, {sort: {name: 1}});
+		}
+	})
+
+	Template.addList.events({
+		'submit form': function(event){
+			event.preventDefault();
+			var listName = $('[name=listName]').val();
+			Lists.insert({
+				name: listName
+			}, function(error, results){
+				Router.go('listPage', {_id: results});
+			});
+			$('[name=listName]').val('');
 		}
 	});
 }
